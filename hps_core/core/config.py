@@ -62,6 +62,8 @@ hparams.DATASET.MESH_COLOR = 'pinkish'
 hparams.DATASET.FOCAL_LENGTH = 5000.
 hparams.DATASET.IGNORE_3D = False
 hparams.DATASET.DATASETS_AND_RATIOS = 'mpii_3dpw_0.5_0.5'
+hparams.DATASET.USE_HEATMAPS = '' # 'hm', 'hm_soft', 'part_segm', 'attention'
+
 
 # optimizer config
 hparams.OPTIMIZER = CN()
@@ -104,6 +106,33 @@ hparams.HMR.BETA_LOSS_WEIGHT = 0.001
 hparams.HMR.OPENPOSE_TRAIN_WEIGHT = 0.
 hparams.HMR.GT_TRAIN_WEIGHT = 1.
 hparams.HMR.LOSS_WEIGHT = 60.
+
+hparams.PARE = CN()
+hparams.PARE.BACKBONE= "resnet50"
+hparams.PARE.SHAPE_LOSS_WEIGHT= 0
+hparams.PARE.KEYPOINT_LOSS_WEIGHT= 5.
+hparams.PARE.KEYPOINT_NATIVE_LOSS_WEIGHT= 5.
+hparams.PARE.POSE_LOSS_WEIGHT= 1.
+hparams.PARE.BETA_LOSS_WEIGHT= 0.001
+hparams.PARE.OPENPOSE_TRAIN_WEIGHT= 0.
+hparams.PARE.GT_TRAIN_WEIGHT= 1.
+hparams.PARE.LOSS_WEIGHT= 60.
+hparams.PARE.NUM_JOINTS= 24
+hparams.PARE.SOFTMAX_TEMP= 1.0
+hparams.PARE.NUM_ITERATIONS= 3
+hparams.PARE.USE_UPSAMPLING= True
+hparams.PARE.DECONV_CONV_KERNEL_SIZE= 3
+hparams.PARE.NUM_DECONV_LAYERS= 3
+hparams.PARE.NUM_DECONV_FILTERS= 256
+hparams.PARE.NUM_FEATURES_SMPL= 64
+hparams.PARE.NUM_JOINTS= 24
+hparams.PARE.USE_KEYPOINT_ATTENTION= True
+hparams.PARE.USE_POSTCONV_KEYPOINT_ATTENTION= False
+hparams.PARE.KEYPOINT_ATTENTION_ACT= "softmax"
+hparams.PARE.USE_SCALE_KEYPOINT_ATTENTION= False
+hparams.PARE.INIT_XAVIER = False
+hparams.PARE.SHAPE_MLP_NUM_LAYERS =  1
+hparams.PARE.POSE_MLP_NUM_LAYERS = 1
 
 
 def get_hparams_defaults():
