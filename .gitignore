@@ -9,7 +9,7 @@ docs/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 hps_core/models/hmr.py
-hps_core/models/backbone/
+hps_core/models/backbone/__pycache__/
 hps_core/models/head/hmr_head.py
 *.py[cod]
 *$py.class
