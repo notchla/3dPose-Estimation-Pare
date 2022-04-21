@@ -42,7 +42,7 @@ def main(hparams, fast_dev_run=False):
 
     # This is where we initialize the model specific training routines
     # check HPSTrainer to see training, validation, testing loops
-    model = HPSTrainer(hparams=hparams).to(device)
+    #model = HPSTrainer(hparams=hparams).to(device)
     model = PARETrainer(hparams=hparams).to(device)
 
     # TRAINING.PRETRAINED_LIT points to the checkpoint files trained using this repo
