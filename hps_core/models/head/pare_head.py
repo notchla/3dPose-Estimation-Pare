@@ -62,7 +62,7 @@ class PareHead(nn.Module):
             use_scale_keypoint_attention=False,
             use_branch_nonlocal=None, # 'concatenation', 'dot_product', 'embedded_gaussian', 'gaussian'
             use_final_nonlocal=None, # 'concatenation', 'dot_product', 'embedded_gaussian', 'gaussian'
-            # backbone='resnet',
+            backbone='resnet',
             # use_hmr_regression=False,
             # use_coattention=False,
             # num_coattention_iter=1,
@@ -136,53 +136,56 @@ class PareHead(nn.Module):
         #     num_input_features += 2
         #     self.num_input_features = num_input_features
 
-        # if backbone.startswith('hrnet'):
-        #     if use_resnet_conv_hrnet:
-        #         logger.info('Using resnet block for keypoint and smpl conv layers...')
-        #         self.keypoint_deconv_layers = self._make_res_conv_layers(
-        #             input_channels=self.num_input_features,
-        #             num_channels=num_deconv_filters[-1],
-        #             num_basic_blocks=num_deconv_layers,
-        #         )
-        #         self.num_input_features = num_input_features
-        #         self.smpl_deconv_layers = self._make_res_conv_layers(
-        #             input_channels=self.num_input_features,
-        #             num_channels=num_deconv_filters[-1],
-        #             num_basic_blocks=num_deconv_layers,
-        #         )
-        #     else:
-        #         self.keypoint_deconv_layers = self._make_conv_layer(
-        #             num_deconv_layers,
-        #             num_deconv_filters,
-        #             (3,)*num_deconv_layers,
-        #         )
-        #         self.num_input_features = num_input_features
-        #         self.smpl_deconv_layers = self._make_conv_layer(
-        #             num_deconv_layers,
-        #             num_deconv_filters,
-        #             (3,)*num_deconv_layers,
-        #         )
-        # else:
+        if backbone.startswith('hrnet'):
+            # if use_resnet_conv_hrnet:
+            #     logger.info('Using resnet block for keypoint and smpl conv layers...')
+            #     self.keypoint_deconv_layers = self._make_res_conv_layers(
+            #         input_channels=self.num_input_features,
+            #         num_channels=num_deconv_filters[-1],
+            #         num_basic_blocks=num_deconv_layers,
+            #     )
+            #     self.num_input_features = num_input_features
+            #     self.smpl_deconv_layers = self._make_res_conv_layers(
+            #         input_channels=self.num_input_features,
+            #         num_channels=num_deconv_filters[-1],
+            #         num_basic_blocks=num_deconv_layers,
+            #     )
+            # else:
+            logger.info("Using hrnet as backbone")
+            logger.info(f"num_deconv_layers : {num_deconv_layers}")
+            logger.info(f"num_deconv_filters : {num_deconv_filters}")
+            self.keypoint_deconv_layers = self._make_conv_layer(
+                num_deconv_layers,
+                num_deconv_filters,
+                (3,)*num_deconv_layers,
+            )
+            self.num_input_features = num_input_features
+            self.smpl_deconv_layers = self._make_conv_layer(
+                num_deconv_layers,
+                num_deconv_filters,
+                (3,)*num_deconv_layers,
+            )
+        else:
         # part branch that estimates 2d keypoints
 
-        conv_fn = self._make_upsample_layer if use_upsampling else self._make_deconv_layer
+            conv_fn = self._make_upsample_layer if use_upsampling else self._make_deconv_layer
 
-        if use_upsampling:
-            logger.info('Upsampling is active to increase spatial dimension')
-            logger.info(f'Upsampling conv kernels: {num_deconv_kernels}')
+            if use_upsampling:
+                logger.info('Upsampling is active to increase spatial dimension')
+                logger.info(f'Upsampling conv kernels: {num_deconv_kernels}')
 
-        self.keypoint_deconv_layers = conv_fn(
-            num_deconv_layers,
-            num_deconv_filters,
-            num_deconv_kernels,
-        )
-        # reset inplanes to 2048 -> final resnet layer
-        self.num_input_features = num_input_features
-        self.smpl_deconv_layers = conv_fn(
-            num_deconv_layers,
-            num_deconv_filters,
-            num_deconv_kernels,
-        )
+            self.keypoint_deconv_layers = conv_fn(
+                num_deconv_layers,
+                num_deconv_filters,
+                num_deconv_kernels,
+            )
+            # reset inplanes to 2048 -> final resnet layer
+            self.num_input_features = num_input_features
+            self.smpl_deconv_layers = conv_fn(
+                num_deconv_layers,
+                num_deconv_filters,
+                num_deconv_kernels,
+            )
 
         pose_mlp_inp_dim = num_deconv_filters[-1]
         smpl_final_dim = num_features_smpl

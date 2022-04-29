@@ -54,16 +54,16 @@ class PARE(nn.Module):
             # use_cam=False,
     ):
         super(PARE, self).__init__()
-        # if backbone.startswith('hrnet'):
-        #     backbone, use_conv = backbone.split('-')
-        #     # hrnet_w32-conv, hrnet_w32-interp
-        #     self.backbone = eval(backbone)(
-        #         pretrained=True,
-        #         downsample=False,
-        #         use_conv=(use_conv == 'conv')
-        #     )
-        # else:
-        self.backbone = eval(backbone)(pretrained=True)
+        if backbone.startswith('hrnet'):
+            backbone, use_conv = backbone.split('-')
+            # hrnet_w32-conv, hrnet_w32-interp
+            self.backbone = eval(backbone)(
+                pretrained=True,
+                downsample=False,
+                use_conv=(use_conv == 'conv')
+            )
+        else:
+            self.backbone = eval(backbone)(pretrained=True)
 
         # self.backbone = eval(backbone)(pretrained=True)
         self.head = PareHead(
@@ -92,7 +92,7 @@ class PARE(nn.Module):
             use_scale_keypoint_attention=use_scale_keypoint_attention,
             # use_branch_nonlocal=use_branch_nonlocal, # 'concatenation', 'dot_product', 'embedded_gaussian', 'gaussian'
             # use_final_nonlocal=use_final_nonlocal, # 'concatenation', 'dot_product', 'embedded_gaussian', 'gaussian'
-            # backbone=backbone,
+            backbone=backbone,
             # use_hmr_regression=use_hmr_regression,
             # use_coattention=use_coattention,
             # num_coattention_iter=num_coattention_iter,
