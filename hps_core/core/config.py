@@ -12,6 +12,8 @@ JOINT_REGRESSOR_TRAIN_EXTRA = 'data/J_regressor_extra.npy'
 SMPL_MEAN_PARAMS = 'data/smpl_mean_params.npz'
 SMPL_MODEL_DIR = 'data/body_models/smpl'
 
+PASCAL_ROOT = "data/occlusion_augmentation/VOCdevkit/VOC2012/"
+
 DATASET_FOLDERS = {
     'mpii': MPII_ROOT,
     '3dpw': PW3D_ROOT,
@@ -61,6 +63,7 @@ hparams.DATASET.RENDER_RES = 480
 hparams.DATASET.MESH_COLOR = 'pinkish'
 hparams.DATASET.FOCAL_LENGTH = 5000.
 hparams.DATASET.IGNORE_3D = False
+hparams.DATASET.USE_SYNTHETIC_OCCLUSION = False
 hparams.DATASET.DATASETS_AND_RATIOS = 'mpii_3dpw_0.5_0.5'
 hparams.DATASET.USE_HEATMAPS = '' # 'hm', 'hm_soft', 'part_segm', 'attention'
 

@@ -1,4 +1,4 @@
-LOG_DIR: 'logs/pare'
+LOG_DIR: 'logs/pare-hrnet'
 EXP_NAME: 'hmr_pare'
 SEED_VALUE: -1
 METHOD: 'pare'
@@ -16,6 +16,7 @@ DATASET:
   NUM_IMAGES: -1
   IMG_RES: 224
   USE_HEATMAPS: part_segm
+  USE_SYNTHETIC_OCCLUSION : True
 OPTIMIZER:
   TYPE: 'adam'
   LR: 5e-5

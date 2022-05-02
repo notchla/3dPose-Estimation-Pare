@@ -11,6 +11,7 @@ from ..core import constants, config
 from ..core.config import DATASET_FILES, DATASET_FOLDERS, EVAL_MESH_DATASETS
 from ..utils.image_utils import crop, transform, rot_aa, read_img
 from ..utils import kp_utils
+from .augmentation import load_occluders, occlude_with_objects
 
 
 class BaseDataset(Dataset):
@@ -111,6 +112,10 @@ class BaseDataset(Dataset):
             self.gender = -1*np.ones(len(self.imgname)).astype(np.int32)
 
         self.occluders = None
+        if is_train and self.options.USE_SYNTHETIC_OCCLUSION:
+            self.occluders = load_occluders(pascal_voc_root_path=config.PASCAL_ROOT)
+            logger.info(f'Found {len(self.occluders)} suitable '
+                        f'objects from pascal dataset')
 
         # evaluation variables
         if not self.is_train or (self.is_train and dataset == '3dpw'):
@@ -136,6 +141,8 @@ class BaseDataset(Dataset):
         rgb_img = crop(rgb_img, center, scale,
                        [img_res, img_res], rot=rot)
 
+        if self.occluders is not None:
+            rgb_img = occlude_with_objects(rgb_img, self.occluders)
         # in the rgb image we add pixel noise in a channel-wise manner
         rgb_img[:,:,0] = np.minimum(255.0, np.maximum(0.0, rgb_img[:,:,0]*pn[0]))
         rgb_img[:,:,1] = np.minimum(255.0, np.maximum(0.0, rgb_img[:,:,1]*pn[1]))
