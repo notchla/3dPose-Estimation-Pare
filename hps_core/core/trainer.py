@@ -577,7 +577,8 @@ class PARETrainer(pl.LightningModule):
             mesh_color=self.hparams.DATASET.MESH_COLOR,
         )
 
-        # Initialize the training datasets only in training mode
+
+        #Initialize the training datasets only in training mode
         if not hparams.RUN_TEST:
             self.train_ds = self.train_dataset()
 
@@ -967,7 +968,7 @@ class PARETrainer(pl.LightningModule):
     def train_dataloader(self):
         set_seed(self.hparams.SEED_VALUE)
 
-        self.train_ds = self.train_dataset()
+        #self.train_ds = self.train_dataset()
 
         return DataLoader(
             dataset=self.train_ds,
