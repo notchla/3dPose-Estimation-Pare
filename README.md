@@ -106,3 +106,20 @@ We use Mean Per Joint Position Error (MPJPE) between predicted and ground-truth 
 This is a fairly standard evaluation metric used in HPS research. 
 It is simply the euclidean distance between predicted and ground-truth joints averaged
 across all testing samples.
+
+## Setup
+
+Install and activate Anaconda environment:
+
+
+```shell
+conda env create -f environment.yml 
+conda activate hps-env
+```
+
+Download the MPII pretrained weights from the [Deep High-Resolution Representation Learning for Human Pose Estimation repository](https://github.com/HRNet/HRNet-Human-Pose-Estimation#installation). Update ```line 617``` from [hrnet.py](hps_core/models/backbone/hrnet.py) with the path of the downloaded file.
+
+## Run
+```shell
+python scripts/main.py --cfg configs/pare-hrnet.yaml
+```

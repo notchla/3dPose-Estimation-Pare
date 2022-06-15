@@ -614,7 +614,7 @@ def get_cfg_defaults(pretrained, width=32, downsample=False, use_conv=False):
 
 def hrnet_w32(
         pretrained=True,
-        pretrained_ckpt= os.path.join(os.getcwd(), 'data/pretrained_models/pose_coco/pose_hrnet_w32_256x192.pth'),
+        pretrained_ckpt= os.path.join(os.getcwd(), 'data/pretrained_models/pose_mpii/pose_hrnet_w32_256x256.pth'),
         downsample=False,
         use_conv=False,
 ):
@@ -624,7 +624,7 @@ def hrnet_w32(
 
 def hrnet_w48(
         pretrained=True,
-        pretrained_ckpt='data/pretrained_models/pose_coco/pose_hrnet_w48_256x192.pth',
+        pretrained_ckpt='data/pretrained_models/pose_mpii/pose_hrnet_w48_256x192.pth',
         downsample=False,
         use_conv=False,
 ):
