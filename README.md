@@ -117,6 +117,14 @@ conda env create -f environment.yml
 conda activate hps-env
 ```
 
+Install requirements.txt
+
+```shell
+pip install -r requirements.txt
+```
+
+**Note** : The number of workers for the dataloader is set to 16. If less or more core are used this needs to be changed in the config
+
 Download the MPII pretrained weights from the [Deep High-Resolution Representation Learning for Human Pose Estimation repository](https://github.com/HRNet/HRNet-Human-Pose-Estimation#installation). Update ```line 617``` from [hrnet.py](hps_core/models/backbone/hrnet.py) with the path of the downloaded file.
 
 ## Run
