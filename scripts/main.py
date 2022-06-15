@@ -13,7 +13,7 @@ sys.path.append('.')
 from hps_core.core.trainer import HPSTrainer, PARETrainer
 from hps_core.core.config import update_hparams
 from hps_core.utils.train_utils import load_pretrained_model, set_seed, add_init_smpl_params_to_dict
-from hps_core.core.transformer_trainer import TransformerTrainer
+#from hps_core.core.transformer_trainer import TransformerTrainer
 
 
 def main(hparams, fast_dev_run=False):
