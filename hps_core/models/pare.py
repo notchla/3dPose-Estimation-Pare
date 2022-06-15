@@ -134,6 +134,7 @@ class PARE(nn.Module):
             gt_segm=None,
     ):
         features = self.backbone(images)
+        #logger.info(f"after backbone shape {features.shape}")
         hmr_output = self.head(features, gt_segm=gt_segm)
 
         # if self.use_cam:

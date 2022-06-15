@@ -1,4 +1,5 @@
 import os
+from tabnanny import verbose
 import cv2
 import json
 import torch
@@ -7,6 +8,7 @@ import numpy as np
 from loguru import logger
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
+# import torchcontrib
 
 from . import config
 from . import constants
@@ -950,11 +952,33 @@ class PARETrainer(pl.LightningModule):
         self.init_evaluation_variables()
 
     def configure_optimizers(self):
-        return torch.optim.Adam(
+        optimizer = torch.optim.Adam(
             self.parameters(),
             lr=self.hparams.OPTIMIZER.LR,
             weight_decay=self.hparams.OPTIMIZER.WD
         )
+
+        return {
+            "optimizer" : optimizer,
+            "lr_scheduler" : {
+                "scheduler": torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=10, mode="min", verbose=True, factor=0.1),
+                "monitor": "val_loss",
+                "frequency": 1,
+                "interval": "epoch"
+            }
+        }
+
+        # optimizer = torchcontrib.optim.SWA(optimizer, swa_start=5*568, swa_freq=568, swa_lr=self.hparams.OPTIMIZER.LR)
+        # optimizer.defaults = optimizer.optimizer.defaults
+        # optimizer.param_groups = optimizer.optimizer.param_groups
+        # return [optimizer]
+    
+    # def training_epoch_end(self, outputs):
+    #     for opt in self.trainer.optimizers:
+    #         if not type(opt) is torchcontrib.optim.SWA:
+    #             continue
+    #         opt.swap_swa_sgd()
+    #     return None
 
     def train_dataset(self):
         train_ds = MixedDataset(

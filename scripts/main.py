@@ -1,16 +1,19 @@
 import os
 import sys
+from tabnanny import verbose
 import torch
 import argparse
 from loguru import logger
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import TensorBoardLogger
-from pytorch_lightning.callbacks import ModelCheckpoint
+from pytorch_lightning.callbacks import ModelCheckpoint, StochasticWeightAveraging, EarlyStopping
+# from pytorch_lightning.callbacks.base.Callback import StochasticWeightAveraging
 sys.path.append('.')
 
 from hps_core.core.trainer import HPSTrainer, PARETrainer
 from hps_core.core.config import update_hparams
 from hps_core.utils.train_utils import load_pretrained_model, set_seed, add_init_smpl_params_to_dict
+from hps_core.core.transformer_trainer import TransformerTrainer
 
 
 def main(hparams, fast_dev_run=False):
@@ -68,17 +71,19 @@ def main(hparams, fast_dev_run=False):
         verbose=True,
         save_top_k=30, # reduce this if you don't have enough storage
         mode='min',
-        period=hparams.TRAINING.CHECK_VAL_EVERY_N_EPOCH,
+        # period=hparams.TRAINING.CHECK_VAL_EVERY_N_EPOCH,
     )
+
+    early_stopping_callback = EarlyStopping(monitor="val_loss", mode="min", patience=20, verbose=True)
 
     # Optionally you can use Automatic Mixed Precision to reduce the training time
     # and gpu memory usage which helps with increasing the batch size or image size
     amp_params = {}
     if hparams.TRAINING.USE_AMP:
-        logger.info(f'Using automatic mixed precision: ampl_level 02, precision 16...')
+        logger.info(f'Using native mixed precision')
         amp_params = {
-            'amp_level': 'O2',
-            # 'amp_backend': 'apex',
+            #'amp_level': 'O2',
+            'amp_backend': 'native',
             'precision': 16,
         }
 
@@ -86,13 +91,13 @@ def main(hparams, fast_dev_run=False):
         gpus=1,
         logger=experiment_loggers,
         max_epochs=hparams.TRAINING.MAX_EPOCHS, # total number of epochs
-        callbacks=[ckpt_callback],
+        callbacks=[ckpt_callback, early_stopping_callback],
         log_every_n_steps=50,
         terminate_on_nan=True,
         default_root_dir=log_dir,
         progress_bar_refresh_rate=50,
         check_val_every_n_epoch=hparams.TRAINING.CHECK_VAL_EVERY_N_EPOCH,
-        reload_dataloaders_every_epoch=hparams.TRAINING.RELOAD_DATALOADERS_EVERY_EPOCH,
+        reload_dataloaders_every_n_epochs=hparams.TRAINING.RELOAD_DATALOADERS_EVERY_EPOCH,
         resume_from_checkpoint=hparams.TRAINING.RESUME,
         num_sanity_val_steps=0,
         fast_dev_run=fast_dev_run,
